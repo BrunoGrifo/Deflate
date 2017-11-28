@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 		 maximun = findMaxBits(compCodgAlfCompCodg);
 		 criaCodigosDeHuffman(maximun,codHuffman,compCodgAlfCompCodg);
 
-		 unsigned char codHuffman2[19];
+		 char codHuffman2[19];
 		for(zeros=0;zeros<19;zeros++){
             codHuffman2[zeros]=0;
         }
@@ -125,6 +125,11 @@ int main(int argc, char** argv)
 		}
         //converter int to binario
         getBin(compCodgAlfCompCodg,codHuffman, codHuffman2);
+
+        //Criar arvore
+        HuffmanTree *hft = createHFTree();
+
+        //Ex4
 
 
 
@@ -149,10 +154,9 @@ int main(int argc, char** argv)
     return EXIT_SUCCESS;
 }
 
-void getBin(int* compCodgAlfCompCodg,int* codHuffman, unsigned char* codHuffman2){
+void getBin(int* compCodgAlfCompCodg,int* codHuffman, char* codHuffman2){
     int i = 0;
     while(i<19){
-        printf("entrou\n");
         if(codHuffman[i]!=-1){
            bitToString(compCodgAlfCompCodg[i],codHuffman[i],&codHuffman2[i]);
         }
@@ -160,18 +164,19 @@ void getBin(int* compCodgAlfCompCodg,int* codHuffman, unsigned char* codHuffman2
     }
 
 }
-void bitToString(int compCodgAlfCompCodg,int codHuffman, unsigned char* codHuffman2 ){
+void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2 ){
     int i;
-    unsigned char bit=0;
-    unsigned char output[compCodgAlfCompCodg];
+    char bit=0;
+    char output[compCodgAlfCompCodg];
     output[compCodgAlfCompCodg]='\0';
     for(i=compCodgAlfCompCodg-1;i>=0;i--){
         bit=codHuffman%2;
         output[i]=(bit&1)+48;
         codHuffman = codHuffman/2;
     }
-    printf("Grifo: %s\n",output);
-
+    codHuffman2=output;
+    printf("String: %s\n",output);
+    //printf("Grifo ponteiro: %s\n",&output);
 }
 
 void criaCodigosDeHuffman(int maxBits,int* codHuffman,int* compCodgAlfCompCodg){
