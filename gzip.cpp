@@ -110,36 +110,40 @@ int main(int argc, char** argv)
 		for(zeros=0;zeros<19;zeros++){
             codHuffman[zeros]=-1;
         }
-		 printf("Codigos de Huffman: \n");
+		 printf("Distancias: \n");
 		 int maximun;
 		 maximun = findMaxBits(compCodgAlfCompCodg);
 		 criaCodigosDeHuffman(maximun,codHuffman,compCodgAlfCompCodg);
 
-		 char codHuffman2[19];
-		for(zeros=0;zeros<19;zeros++){
-            codHuffman2[zeros]=0;
-        }
-        //print distancias
+		 //print distancias
         for(hclenIterator=0;hclenIterator<19;hclenIterator++){
             printf("%d: %d\n",hclenIterator,codHuffman[hclenIterator]);
 		}
+
+        char codHuffman2[19][5];
+		for(zeros=0;zeros<19;zeros++){
+                for(int h=0;h<5;h++){
+                     codHuffman2[zeros][h]='\0';
+                }
+
+        }
+
         //converter int to binario
         getBin(compCodgAlfCompCodg,codHuffman, codHuffman2);
 
-        //Criar arvore
-        HuffmanTree *hft = createHFTree();
+        printf("Codigos de huffman: \n");
+		for(zeros=0;zeros<19;zeros++){
+                printf("%d: ",zeros);
+                for(int h=0;h<5;h++){
+                     printf("%c",codHuffman2[zeros][h]);
+                }
+                printf("\n ");
 
-        //Ex4
-
-
-
-
-		 //Imprime
-		 for(hclenIterator=0;hclenIterator<19;hclenIterator++){
-            printf("%d: %d\n",hclenIterator,codHuffman2[hclenIterator]);
-		}
-
-
+        }
+        //criar arvore huffman
+        HuffmanTree* ArvoreHuffman = createHFTree();
+        addCodesToTree(ArvoreHuffman,19,compCodgAlfCompCodg,codHuffman);
+        //exercicio 4
 		//actualizar n�mero de blocos analisados
 		numBlocks++;
 	}while(BFINAL == 0);
@@ -153,30 +157,54 @@ int main(int argc, char** argv)
     system("PAUSE");
     return EXIT_SUCCESS;
 }
-
-void getBin(int* compCodgAlfCompCodg,int* codHuffman, char* codHuffman2){
+void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf, int* codHuffman ){
+   int i;
+   //char str[5];
+   for (i=0;i<n;i++){
+        if(comprimentosAlf[i]>0){
+            char str[8];
+            codeToString(str,codHuffman[i],comprimentosAlf[i]);
+            addNode(ArvoreHuffman,str,i,1);
+        }
+   }
+}
+void getBin(int* compCodgAlfCompCodg,int* codHuffman,  char codHuffman2[][5]){
     int i = 0;
     while(i<19){
+        //printf("entrou\n");
         if(codHuffman[i]!=-1){
-           bitToString(compCodgAlfCompCodg[i],codHuffman[i],&codHuffman2[i]);
+           bitToString(compCodgAlfCompCodg[i],codHuffman[i],codHuffman2[i]);
         }
         i++;
     }
 
 }
-void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2 ){
+void codeToString(char strBits[], int num ,int distancia){
+
+	char mask = 0x01;  //get LSbit
+
+	for (char bit, i = distancia-1; i >= 0; i--)
+	{
+		bit = num & mask;
+		strBits[i] = bit +48; //converter valor num�rico para o caracter alfanum�rico correspondente
+		num = num >> 1;
+	}
+	strBits[distancia]='\0';
+	printf("grifo: %s\n",strBits);
+
+}
+void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2){
     int i;
     char bit=0;
-    char output[compCodgAlfCompCodg];
-    output[compCodgAlfCompCodg]='\0';
+    //unsigned char output[compCodgAlfCompCodg];
+    codHuffman2[compCodgAlfCompCodg]='\0';
     for(i=compCodgAlfCompCodg-1;i>=0;i--){
         bit=codHuffman%2;
-        output[i]=(bit&1)+48;
+        codHuffman2[i]=(bit&1)+48;
         codHuffman = codHuffman/2;
     }
-    codHuffman2=output;
-    printf("String: %s\n",output);
-    //printf("Grifo ponteiro: %s\n",&output);
+
+
 }
 
 void criaCodigosDeHuffman(int maxBits,int* codHuffman,int* compCodgAlfCompCodg){
@@ -430,6 +458,18 @@ void bits2String(char *strBits, unsigned char byte)
 		strBits[i] = bit +48; //converter valor num�rico para o caracter alfanum�rico correspondente
 		byte = byte >> 1;
 	}
+}
+void bits2String2(char *strBits, int bits,int num)
+{
+	char mask = 0x01;  //get LSbit
+
+	for (char bit, i = bits-1; i >= 0; i--)
+	{
+		bit = num & mask;
+		strBits[i] = bit +48; //converter valor num�rico para o caracter alfanum�rico correspondente
+		num = num >> 1;
+	}
+	strBits[bits]='\0';
 }
 
 /*void getBin(int num,unsigned char *str){

@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1511830629 source:e:\documentos\ti_proj\pl2_ti\gzip.cpp
+1512403752 source:e:\documentos\ti_proj\pl2_ti\gzip.cpp
 	<cstdlib>
 	"huffman.h"
 	"gzip.h"
 	<stddef.h>
 
-1511830667 e:\documentos\ti_proj\pl2_ti\gzip.h
+1512402861 e:\documentos\ti_proj\pl2_ti\gzip.h
 	<stdio.h>
 
 1192720706 source:e:\documentos\ti_proj\pl2_ti\huffman.cpp

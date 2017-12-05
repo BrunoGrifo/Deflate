@@ -34,6 +34,9 @@ void bits2String(char *strBits, unsigned char byte);
 int lerBloco(int needBits,char *availBits,unsigned int *rb,FILE *gzFile);
 int findMaxBits(int *compCodgAlfCompCodg);
 //void getBin(int num,unsigned char *str);
-void getBin(int* compCodgAlfCompCodg,int* codHuffman,char* codHuffman2);
-void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2 );
+void getBin(int* compCodgAlfCompCodg,int* codHuffman,  char codHuffman2[][5]);
+void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2);
 void criaCodigosDeHuffman(int maxBits,int* codHuffman,int* compCodgAlfCompCodg);
+
+void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf, int* codHuffman );
+void codeToString(char str[], int compAlf,int codHuffman);
