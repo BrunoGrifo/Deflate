@@ -131,7 +131,7 @@ int main(int argc, char** argv)
         //converter int to binario
         getBin(compCodgAlfCompCodg,codHuffman, codHuffman2);
 
-        printf("Codigos de huffman: \n");
+
 		for(zeros=0;zeros<19;zeros++){
                 printf("%d: ",zeros);
                 for(int h=0;h<5;h++){
@@ -140,10 +140,38 @@ int main(int argc, char** argv)
                 printf("\n ");
 
         }
-        //criar arvore huffman
+        //criar arvore huffma
+        printf("A criar arvore e adicionar codigos...\n");
         HuffmanTree* ArvoreHuffman = createHFTree();
         addCodesToTree(ArvoreHuffman,19,compCodgAlfCompCodg,codHuffman);
         //exercicio 4
+        int arrayHLIT[HLIT+257];
+
+        for(zeros=0;zeros<HLIT+257;zeros++){
+            arrayHLIT[zeros]=0;
+        }
+        readHuffmanTree(ArvoreHuffman,HLIT+257,arrayHLIT,&availBits,&rb,gzFile);
+
+        //Imprir arrayHLIT
+        printf("Array HLIT:\n");
+        for(zeros=0;zeros<HLIT+257;zeros++){
+            printf("%d: %d\n",zeros,arrayHLIT[zeros]);
+        }
+
+        //Exercicio 5
+        int arrayHDIST[HDIST+1];
+        for(zeros=0;zeros<HDIST+1;zeros++){
+            arrayHDIST[zeros]=0;
+        }
+        readHuffmanTree(ArvoreHuffman,HDIST+1,arrayHDIST,&availBits,&rb,gzFile);
+        //Imprimir arrayHDIST
+        printf("Array HDIST:\n");
+        for(zeros=0;zeros<HDIST+1;zeros++){
+            printf("%d: %d\n",zeros,arrayHDIST[zeros]);
+        }
+        //Exercicio 6
+
+
 		//actualizar n�mero de blocos analisados
 		numBlocks++;
 	}while(BFINAL == 0);
@@ -156,6 +184,37 @@ int main(int argc, char** argv)
     //RETIRAR antes de criar o execut�vel final
     system("PAUSE");
     return EXIT_SUCCESS;
+}
+void readHuffmanTree(HuffmanTree* ArvoreHuffman,int Nelementos,int* arrayHLIT,char* availBits,unsigned int* rb,FILE* gzFile){
+    int i,j,bit,nextCode;
+
+    for(i=0; i<Nelementos;i++){
+        resetCurNode(ArvoreHuffman); // Voltar a por o ponteiro na raiz da arvore
+        do{
+            bit=lerBloco(1,availBits,rb,gzFile);
+            nextCode= nextNode(ArvoreHuffman,bit+48);
+        }while(nextCode<0);
+        if(nextCode<16){
+            arrayHLIT[i]=nextCode;
+        }
+        if(nextCode==16){
+            bit=lerBloco(2,availBits,rb,gzFile)+3; // dar "shift" no intervalo
+            for(j=0;j<bit-1;j++){
+                arrayHLIT[i+j]=arrayHLIT[i-1];
+            }
+            i+=j;
+        }
+        if(nextCode==17){
+            bit=lerBloco(3,availBits,rb,gzFile)+3;
+            i+=bit-1; //Como inicializei o array a 0's basta incrementar no iterador
+
+        }
+        if(nextCode==18){
+            bit=lerBloco(7,availBits,rb,gzFile)+11;
+            i+= bit-1; //Como inicializei o array a 0's basta incrementar no iterador
+        }
+    }
+
 }
 void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf, int* codHuffman ){
    int i;

@@ -40,3 +40,4 @@ void criaCodigosDeHuffman(int maxBits,int* codHuffman,int* compCodgAlfCompCodg);
 
 void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf, int* codHuffman );
 void codeToString(char str[], int compAlf,int codHuffman);
+void readHuffmanTree(HuffmanTree *ArvoreHuffman,int Nelementos,int* arrayHLIT,char* availBits,unsigned int* rb,FILE* gzFile);
