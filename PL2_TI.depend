@@ -19,3 +19,23 @@
 	<cstdlib>
 	"huffman.h"
 
+1513041426 source:c:\users\alex_\desktop\deflate-grifo\gzip.cpp
+	<cstdlib>
+	"huffman.h"
+	"gzip.h"
+	<stddef.h>
+
+1512743679 c:\users\alex_\desktop\deflate-grifo\huffman.h
+	<stdio.h>
+	<string.h>
+
+1513039450 c:\users\alex_\desktop\deflate-grifo\gzip.h
+	<stdio.h>
+
+1512743679 source:c:\users\alex_\desktop\deflate-grifo\huffman.cpp
+	"huffman.h"
+
+1512743679 source:c:\users\alex_\desktop\deflate-grifo\testhuffman.cpp
+	<cstdlib>
+	"huffman.h"
+
