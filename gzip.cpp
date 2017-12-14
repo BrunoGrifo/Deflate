@@ -106,14 +106,14 @@ int main(int argc, char** argv)
 		}
 
 		//ex3
-		int codHuffman[19];
+		unsigned int codHuffman[19];
 		for(zeros=0;zeros<19;zeros++){
             codHuffman[zeros]=-1;
         }
 		 printf("Distancias: \n");
 		 int maximun;
 		 maximun = findMaxBits(compCodgAlfCompCodg);
-		 criaCodigosDeHuffman(maximun,codHuffman,compCodgAlfCompCodg);
+		 criaCodigosDeHuffman(maximun,19,codHuffman,compCodgAlfCompCodg);
 
 		 //print distancias
         for(hclenIterator=0;hclenIterator<19;hclenIterator++){
@@ -150,7 +150,7 @@ int main(int argc, char** argv)
         for(zeros=0;zeros<HLIT+257;zeros++){
             arrayHLIT[zeros]=0;
         }
-        readHuffmanTree(ArvoreHuffman,HLIT+257,arrayHLIT,&availBits,&rb,gzFile);
+        readHuffmanTree(ArvoreHuffman,(HLIT+257),arrayHLIT,&availBits,&rb,gzFile);
 
         //Imprir arrayHLIT
         printf("Array HLIT:\n");
@@ -170,6 +170,45 @@ int main(int argc, char** argv)
             printf("%d: %d\n",zeros,arrayHDIST[zeros]);
         }
         //Exercicio 6
+        //HLIT
+        unsigned int distanciasLiterais[HLIT+257];
+		for(zeros=0;zeros<(HLIT+257);zeros++){
+            distanciasLiterais[zeros]=-1;
+        }
+
+		 int maxiHLIT;
+		 maxiHLIT = findMaxBits(arrayHLIT);
+		 printf("maxiHLIT: %i",maxiHLIT);
+		 criaCodigosDeHuffman((10),(HLIT+257),distanciasLiterais,arrayHLIT);
+
+		 //print distancias
+        printf("Distancias Literais: \n");
+        for(hclenIterator=0;hclenIterator<(HLIT+257);hclenIterator++){
+            printf("%i: %i\n",hclenIterator,distanciasLiterais[hclenIterator]);
+		}
+
+		HuffmanTree* ArvoreHuffmanLiterais = createHFTree();
+        addCodesToTree(ArvoreHuffmanLiterais,(HLIT+257),arrayHLIT,distanciasLiterais);
+
+		//HDIST
+        unsigned int distanciasDistancias[HDIST+1];
+		for(zeros=0;zeros<(HDIST+1);zeros++){
+            distanciasDistancias[zeros]=-1;
+        }
+
+        int maxiHDIST = findMaxBits(arrayHDIST);
+        criaCodigosDeHuffman((9),(HDIST+1),distanciasDistancias,arrayHDIST);
+        printf("Distancia distancias");
+
+        for(hclenIterator=0;hclenIterator<(HDIST+1);hclenIterator++){
+            printf("%i: %i\n",hclenIterator,distanciasDistancias[hclenIterator]);
+		}
+
+		HuffmanTree* ArvoreHuffmanDistancias = createHFTree();
+        addCodesToTree(ArvoreHuffmanDistancias,(HDIST+1),arrayHDIST,distanciasDistancias);
+
+        //Exercicio 7
+
 
 
 		//actualizar n�mero de blocos analisados
@@ -185,6 +224,7 @@ int main(int argc, char** argv)
     system("PAUSE");
     return EXIT_SUCCESS;
 }
+
 void readHuffmanTree(HuffmanTree* ArvoreHuffman,int Nelementos,int* arrayHLIT,char* availBits,unsigned int* rb,FILE* gzFile){
     int i,j,bit,nextCode;
 
@@ -199,10 +239,10 @@ void readHuffmanTree(HuffmanTree* ArvoreHuffman,int Nelementos,int* arrayHLIT,ch
         }
         if(nextCode==16){
             bit=lerBloco(2,availBits,rb,gzFile)+3; // dar "shift" no intervalo
-            for(j=0;j<bit-1;j++){
+            for(j=0;j<bit;j++){
                 arrayHLIT[i+j]=arrayHLIT[i-1];
             }
-            i+=j;
+            i+=j-1;
         }
         if(nextCode==17){
             bit=lerBloco(3,availBits,rb,gzFile)+3;
@@ -214,20 +254,25 @@ void readHuffmanTree(HuffmanTree* ArvoreHuffman,int Nelementos,int* arrayHLIT,ch
             i+= bit-1; //Como inicializei o array a 0's basta incrementar no iterador
         }
     }
-
 }
-void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf, int* codHuffman ){
+
+void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf,unsigned int* codHuffman ){
    int i;
+   int k=0;
    //char str[5];
    for (i=0;i<n;i++){
         if(comprimentosAlf[i]>0){
             char str[8];
             codeToString(str,codHuffman[i],comprimentosAlf[i]);
-            addNode(ArvoreHuffman,str,i,1);
+            k=i;
+            addNode(ArvoreHuffman,str,k,0);
+
+
         }
    }
 }
-void getBin(int* compCodgAlfCompCodg,int* codHuffman,  char codHuffman2[][5]){
+
+void getBin(int* compCodgAlfCompCodg,unsigned int* codHuffman,  char codHuffman2[][5]){
     int i = 0;
     while(i<19){
         //printf("entrou\n");
@@ -238,20 +283,22 @@ void getBin(int* compCodgAlfCompCodg,int* codHuffman,  char codHuffman2[][5]){
     }
 
 }
+
 void codeToString(char strBits[], int num ,int distancia){
 
 	char mask = 0x01;  //get LSbit
-
-	for (char bit, i = distancia-1; i >= 0; i--)
+    int j=0;
+	for (char bit, j = distancia-1; j >= 0; j--)
 	{
 		bit = num & mask;
-		strBits[i] = bit +48; //converter valor num�rico para o caracter alfanum�rico correspondente
+		strBits[j] = bit +48; //converter valor num�rico para o caracter alfanum�rico correspondente
 		num = num >> 1;
 	}
 	strBits[distancia]='\0';
 	printf("grifo: %s\n",strBits);
 
 }
+
 void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2){
     int i;
     char bit=0;
@@ -266,11 +313,11 @@ void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2){
 
 }
 
-void criaCodigosDeHuffman(int maxBits,int* codHuffman,int* compCodgAlfCompCodg){
-    unsigned char code;
+void criaCodigosDeHuffman(int maxBits,int iteracoes,unsigned int* codHuffman,int* compCodgAlfCompCodg){
+    unsigned int code;
     int bits;
     unsigned int bl_count[maxBits];
-    unsigned char next_code[maxBits];
+    unsigned int next_code[maxBits];
     code = 0;
     bl_count[0] = 0;
     for(int j=1; j<=maxBits;j++){
@@ -279,21 +326,23 @@ void criaCodigosDeHuffman(int maxBits,int* codHuffman,int* compCodgAlfCompCodg){
     }
     next_code[0] = 0;
     for(int j=1; j<=maxBits;j++){
-        for(int i=0; i<=19;i++){
+        for(int i=0; i<=iteracoes;i++){
             if(compCodgAlfCompCodg[i]==j){
                 bl_count[j]+=1;
             }
         }
+        printf("contagens: %i\n",bl_count[j]);
     }
-    for (bits = 1; bits <= maxBits; bits++) {
+    for (bits = 1; bits <= maxBits; bits++) {//algoritmo slide 34
         code = (code + bl_count[bits-1]) << 1;
         next_code[bits] = code;
     }
+
     int count =0;
     int codigo=0;
-    for(int count=0;count<5;count++){
+    for(int count=0;count<maxBits;count++){
         codigo=next_code[count+1];
-        for(int i=0;i<19;i++){
+        for(int i=0;i<iteracoes;i++){
             if(compCodgAlfCompCodg[i]==count+1){
                 codHuffman[i]=codigo;
                 codigo=codigo+1;
@@ -531,18 +580,37 @@ void bits2String2(char *strBits, int bits,int num)
 	strBits[bits]='\0';
 }
 
-/*void getBin(int num,unsigned char *str){
-  *(str+5) = '\0';
-  int mask = 0x10 << 1;
-  while(mask >>= 1)
-    *str++ = !!(mask & num) + '0';
-}*/
+void insere_lista (Simbolo lista, char it){
+    Simbolo aux;
+    Simbolo no;
+    no = (Simbolo) malloc (sizeof (Simbolo_node));
+    aux=lista;
+    while(aux->next!=NULL){
+        aux=lista->next;
+    }
+    no->caracter=it;
+    aux->next=no;
+    no->next=NULL;
+
+}
+
+
+
+Simbolo cria_lista (void){
+    Simbolo aux;
+    aux = (Simbolo) malloc (sizeof (Simbolo_node));
+    if (aux != NULL) {
+        aux->caracter = 0;
+        aux->next = NULL;
+    }
+    return aux;
+}
 
 int findMaxBits(int* compCodgAlfCompCodg){
     int maximum,c;
     maximum=0;
     c=0;
-    for (c = 1; c <= (int)sizeof(compCodgAlfCompCodg); c++){
+    for (c = 0; c <= (int)sizeof(compCodgAlfCompCodg); c++){
         if (compCodgAlfCompCodg[c] > maximum){
             maximum  = compCodgAlfCompCodg[c];
         }

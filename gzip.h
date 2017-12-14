@@ -26,6 +26,17 @@ typedef struct header
 	unsigned char *HCRC;
 } gzipHeader;
 
+
+typedef struct lnode *Simbolo;
+
+typedef struct lnode {
+    char caracter;
+    Simbolo next;
+} Simbolo_node;
+
+void insere_lista (Simbolo lista, char it);
+Simbolo cria_lista (void);
+
 long getOrigFileSize(FILE *gzFile);
 int getHeader(FILE *gzFile, gzipHeader *gzh);
 int isDynamicHuffman(unsigned char rb);
@@ -34,10 +45,10 @@ void bits2String(char *strBits, unsigned char byte);
 int lerBloco(int needBits,char *availBits,unsigned int *rb,FILE *gzFile);
 int findMaxBits(int *compCodgAlfCompCodg);
 //void getBin(int num,unsigned char *str);
-void getBin(int* compCodgAlfCompCodg,int* codHuffman,  char codHuffman2[][5]);
+void getBin(int* compCodgAlfCompCodg,unsigned int* codHuffman,  char codHuffman2[][5]);
 void bitToString(int compCodgAlfCompCodg,int codHuffman, char* codHuffman2);
-void criaCodigosDeHuffman(int maxBits,int* codHuffman,int* compCodgAlfCompCodg);
+void criaCodigosDeHuffman(int maxBits,int iteracoes, unsigned int* codHuffman,int* compCodgAlfCompCodg);
 
-void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf, int* codHuffman );
+void addCodesToTree(HuffmanTree *ArvoreHuffman, int n, int* comprimentosAlf,unsigned int* codHuffman );
 void codeToString(char str[], int compAlf,int codHuffman);
 void readHuffmanTree(HuffmanTree *ArvoreHuffman,int Nelementos,int* arrayHLIT,char* availBits,unsigned int* rb,FILE* gzFile);
